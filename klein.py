@@ -14,9 +14,12 @@ def listen():
         d = defer.succeed(None)
     def actuallyListen(dummy):
         s = Site(resource())
-        d = endpoint.listen(Site(resource()))
-        d.addCallback(lport.append)
+        return endpoint.listen(Site(resource()))
+    def finishedListening(port):
+        lport.append(port)
+        print("Ready to serve web requests on {}".format(port))
     d.addCallback(actuallyListen)
+    d.addCallback(finishedListening)
 
 @route('/')
 def home(request):
